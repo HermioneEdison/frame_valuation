@@ -16,7 +16,7 @@ st.title("PVC期现结构可视化分析工具")
 st.caption("输入现货价格和12个合约价格，分析期现结构及价差关系")
 
 # 数据存储文件
-DATA_FILE = "pvc_data.csv"
+# DATA_FILE = "pvc_data.csv"
 
 # 交易日工具函数
 def nth_trading_day_of_month(y: int, m: int, n: int) -> pd.Timestamp:
@@ -61,46 +61,8 @@ def build_front_12_contracts(today: date) -> list:
         })
     return out
 
-# -----------------------
-# 数据加载和保存
-# -----------------------
-def load_data():
-    columns = ['日期', '现货价格'] + [f'合约{i+1}' for i in range(12)]
-    
-    if os.path.exists(DATA_FILE):
-        try:
-            df = pd.read_csv(DATA_FILE)
-            # 检查读取后的DataFrame是否为空（防止文件有内容但无列）
-            if df.empty:
-                return pd.DataFrame(columns=columns)
-            return df
-        except pd.errors.EmptyDataError:
-            # 捕获空文件错误，返回一个带表头的空DataFrame
-            print("检测到空数据文件，已初始化表头。")
-            return pd.DataFrame(columns=columns)
-        except Exception as e:
-            # 捕获其他可能的读取错误（如编码问题等）
-            print(f"读取数据文件出错：{e}，将重新初始化。")
-            return pd.DataFrame(columns=columns)
-    else:
-        # 文件不存在，创建新的
-        return pd.DataFrame(columns=columns)
-    
-def save_data(日期, 现货价, 合约价格列表):
-    df = load_data()
-    new_row = {'日期': 日期, '现货价格': 现货价}
-    for i, price in enumerate(合约价格列表):
-        new_row[f'合约{i+1}'] = price
-    
-    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-    df.to_csv(DATA_FILE, index=False)
-    return df
-
-# 加载已有数据
-data_df = load_data()
-
 # 输入区域
-col1, col2, col3 = st.columns([1, 2, 1])
+col1, col2 = st.columns([1, 2])
 
 with col1:
     今天 = st.date_input("今天日期", value=date.today())
@@ -136,21 +98,6 @@ with col2:
                 format="%.2f",
                 key=f"inp_price_{contract}"
             )
-            合约价格_list.append(st.session_state[f"price_{contract}"])
-
-with col3:
-    st.subheader("数据管理")
-    
-    if st.button("保存今日数据"):
-        save_data(str(今天), 现货价, 合约价格_list)
-        st.success(f"已保存 {今天} 的数据！")
-    
-    if st.button("查看历史数据"):
-        if not data_df.empty:
-            st.dataframe(data_df.tail(10))  # 显示最近10条记录
-        else:
-            st.info("暂无历史数据")
-
 
 # 显示合约信息
 st.divider()
@@ -328,6 +275,7 @@ st.markdown("""
 - 价格显示选项可在图表上直接显示具体数值
 
 """)
+
 
 
 
