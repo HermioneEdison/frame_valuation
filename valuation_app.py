@@ -159,6 +159,32 @@ fig.add_trace(go.Scatter(
     visible='legendonly'  # 默认隐藏，可通过图例控制
 ))
 
+# 添加 现货-主力线
+line_x1 = [0, 主力合约_index]  # 从现货到主力再到最后一个合约
+line_y1 = [现货价, 主力合约_price]  # 延长线保持相同斜率
+
+fig.add_trace(go.Scatter(
+    x=line_x1,
+    y=line_y1,
+    mode='lines',
+    name='基差',
+    line=dict(color='green', width=2, dash='dash'),
+    visible='legendonly'  # 默认隐藏，可通过图例控制
+))
+
+# 添加 主力-次主力线
+line_x2 = [主力合约_index, 次主力合约_index]  # 从现货到主力再到最后一个合约
+line_y2 = [主力合约_price, 次主力合约_price]  # 延长线保持相同斜率
+
+fig.add_trace(go.Scatter(
+    x=line_x2,
+    y=line_y2,
+    mode='lines',
+    name='月差',
+    line=dict(color='green', width=2, dash='dash'),
+    visible='legendonly'  # 默认隐藏，可通过图例控制
+))
+
 # 如果需要显示数值
 if show_values:
     fig.add_trace(go.Scatter(
@@ -244,6 +270,7 @@ st.markdown("""
 - 价格显示选项可在图表上直接显示具体数值
 
 """)
+
 
 
 
