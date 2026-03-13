@@ -140,20 +140,21 @@ fig.add_trace(go.Scatter(
 # 添加主力合约到后续合约的延长线
 主力合约_index = labels.index(主力合约)  # 获取主力合约在labels中的索引
 主力合约_price = all_prices[主力合约_index]
+次主力合约_index = labels.index(次主力合约)
 次主力合约_price = all_prices[labels.index(次主力合约)]  # 获取次主力合约价格
 
 # 计算现货到主力合约的价差
 base_spread = 现货价 - 主力合约_price
 
-line_x = [0, 主力合约_index, len(labels)-1]  # 从现货到主力再到最后一个合约
-line_y = [现货价, 主力合约_price, 主力合约_price +  ((len(labels)-1)/主力合约_index) * abs(现货价 - 主力合约_price)]  # 延长线保持相同斜率
+line_x = [0, 次主力合约_index, len(labels)-1]  # 从现货到主力再到最后一个合约
+line_y = [现货价, 主力合约_price, 主力合约_price +  ((len(labels)-1)/次主力合约_index) * abs(现货价 - 次主力合约_price)]  # 延长线保持相同斜率
 
 # 添加延长线（虚线）
 fig.add_trace(go.Scatter(
     x=line_x,
     y=line_y,
     mode='lines',
-    name='现货-主力连线延长线',
+    name='现货-次主力连线延长线',
     line=dict(color='red', width=2, dash='dash'),
     visible='legendonly'  # 默认隐藏，可通过图例控制
 ))
@@ -243,5 +244,6 @@ st.markdown("""
 - 价格显示选项可在图表上直接显示具体数值
 
 """)
+
 
 
