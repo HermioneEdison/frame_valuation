@@ -9,14 +9,10 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from datetime import date
-import os
 
 st.set_page_config(page_title="PVC期现结构分析", layout="wide")
 st.title("PVC期现结构可视化分析工具")
 st.caption("输入现货价格和12个合约价格，分析期现结构及价差关系")
-
-# 数据存储文件
-# DATA_FILE = "pvc_data.csv"
 
 # 交易日工具函数
 def nth_trading_day_of_month(y: int, m: int, n: int) -> pd.Timestamp:
@@ -67,27 +63,26 @@ col1, col2 = st.columns([1, 2])
 with col1:
     今天 = st.date_input("今天日期", value=date.today())
     现货价 = st.number_input("现货价格（元/吨）", min_value=0.0, value=4600.0, step=10.0)
-    
+
     # 获取合约列表
     contracts = build_front_12_contracts(今天)
     contract_names = [c['合约'] for c in contracts]
-    
+
     # 选择主力合约和次主力合约
     主力合约 = st.selectbox("选择主力合约", contract_names, index=0)
     次主力合约 = st.selectbox("选择次主力合约", [c for c in contract_names if c != 主力合约], index=min(1, len(contract_names)-1))
 
 with col2:
     st.subheader("12个合约价格输入")
-    
+
     # 创建两行六列的布局来放置合约价格输入框
     cols = st.columns(6)
-    
+
     # 初始化session state
-    合约价格_list = []
     for contract in contract_names:
         if f"price_{contract}" not in st.session_state:
             st.session_state[f"price_{contract}"] = 0.0
-    
+
     # 在两行中放置合约价格输入框
     for i, contract in enumerate(contract_names):
         with cols[i % 6]:
@@ -275,9 +270,3 @@ st.markdown("""
 - 价格显示选项可在图表上直接显示具体数值
 
 """)
-
-
-
-
-
-
