@@ -146,7 +146,7 @@ fig.add_trace(go.Scatter(
 base_spread = 现货价 - 主力合约_price
 
 line_x = [0, 主力合约_index, len(labels)-1]  # 从现货到主力再到最后一个合约
-line_y = [现货价, 主力合约_price, 主力合约_price - (现货价 - 主力合约_price)]  # 延长线保持相同斜率
+line_y = [现货价, 主力合约_price, 主力合约_price +  (len(labels)-1) * abs(现货价 - 主力合约_price)]  # 延长线保持相同斜率
 
 # 添加延长线（虚线）
 fig.add_trace(go.Scatter(
@@ -243,3 +243,4 @@ st.markdown("""
 - 价格显示选项可在图表上直接显示具体数值
 
 """)
+
