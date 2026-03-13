@@ -141,13 +141,27 @@ fig.add_trace(go.Scatter(
 # 计算现货到主力合约的价差
 base_spread = 现货价 - 主力合约_price
 
-# 生成延长线数据 - 这是一条直线，基于现货和主力合约的价差
-extended_y_values = []
-for i, price in enumerate(all_prices):
+# 创建延长线：从主力合约位置开始，所有后续合约都加上相同的价差(base_spread)
+extended_x = []
+extended_y = []
+
+# 从主力合约开始到所有后续合约
+for i in range(len(labels)):
+    extended_x.append(i)
     if i == 0:  # 现货点
-        extended_y_values.append(现货价)
-    else:  # 各合约点，使用主力合约价格加上现货-主力的价差
-        extended_y_values.append(主力合约_price + base_spread)
+        extended_y.append(现货价)
+    else:  # 合约点：主力合约的实际价格 + 现货-主力的价差
+        extended_y.append(主力合约_price + base_spread)
+
+# 添加延长线（虚线）
+fig.add_trace(go.Scatter(
+    x=extended_x,
+    y=extended_y,
+    mode='lines',
+    name='现货-主力价差平行线',
+    line=dict(color='red', width=2, dash='dash'),
+    visible='legendonly'  # 默认隐藏，可通过图例控制
+))
 
 # 添加延长线（虚线）
 fig.add_trace(go.Scatter(
