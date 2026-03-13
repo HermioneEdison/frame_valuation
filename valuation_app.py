@@ -64,13 +64,26 @@ def build_front_12_contracts(today: date) -> list:
 # -----------------------
 # 数据加载和保存
 # -----------------------
-# 数据保存和加载函数
 def load_data():
+    columns = ['日期', '现货价格'] + [f'合约{i+1}' for i in range(12)]
+    
     if os.path.exists(DATA_FILE):
-        return pd.read_csv(DATA_FILE)
+        try:
+            df = pd.read_csv(DATA_FILE)
+            # 检查读取后的DataFrame是否为空（防止文件有内容但无列）
+            if df.empty:
+                return pd.DataFrame(columns=columns)
+            return df
+        except pd.errors.EmptyDataError:
+            # 捕获空文件错误，返回一个带表头的空DataFrame
+            print("检测到空数据文件，已初始化表头。")
+            return pd.DataFrame(columns=columns)
+        except Exception as e:
+            # 捕获其他可能的读取错误（如编码问题等）
+            print(f"读取数据文件出错：{e}，将重新初始化。")
+            return pd.DataFrame(columns=columns)
     else:
-        # 创建空的DataFrame
-        columns = ['日期', '现货价格'] + [f'合约{i+1}' for i in range(12)]
+        # 文件不存在，创建新的
         return pd.DataFrame(columns=columns)
     
 def save_data(日期, 现货价, 合约价格列表):
@@ -315,6 +328,7 @@ st.markdown("""
 - 价格显示选项可在图表上直接显示具体数值
 
 """)
+
 
 
 
