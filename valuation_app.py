@@ -163,16 +163,6 @@ fig.add_trace(go.Scatter(
     visible='legendonly'  # 默认隐藏，可通过图例控制
 ))
 
-# 添加延长线（虚线）
-fig.add_trace(go.Scatter(
-    x=x_positions,
-    y=extended_y_values,
-    mode='lines',
-    name='现货-主力价差延长线',
-    line=dict(color='red', width=2, dash='dash'),
-    visible='legendonly'  # 默认隐藏，可通过图例控制
-))
-
 # 如果需要显示数值
 if show_values:
     fig.add_trace(go.Scatter(
