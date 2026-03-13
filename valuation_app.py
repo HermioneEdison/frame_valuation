@@ -130,7 +130,7 @@ fig = go.Figure()
 x_positions = list(range(len(labels)))
 fig.add_trace(go.Scatter(
     x=x_positions,
-    y=all_prices_standardize,
+    y=all_prices,
     mode='lines+markers',
     name='期现结构',
     line=dict(color='blue', width=2),
@@ -139,8 +139,8 @@ fig.add_trace(go.Scatter(
 
 # 添加主力合约到后续合约的延长线
 主力合约_index = labels.index(主力合约)  # 获取主力合约在labels中的索引
-主力合约_price = all_prices_standardize[主力合约_index]
-次主力合约_price = all_prices_standardize[labels.index(次主力合约)]  # 获取次主力合约价格
+主力合约_price = all_prices[主力合约_index]
+次主力合约_price = all_prices[labels.index(次主力合约)]  # 获取次主力合约价格
 
 # 计算现货到主力合约的价差
 base_spread = 现货价 - 主力合约_price
@@ -241,4 +241,5 @@ st.markdown("""
 - **主力-次主力合约价差**：反映近远月合约间的价差关系
 - **延长线**：基于现货-主力价差，延伸至后续合约的参考线
 - 价格显示选项可在图表上直接显示具体数值
+
 """)
